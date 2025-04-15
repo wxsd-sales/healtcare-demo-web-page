@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Telehealth Consultation</title>
+    <script src="https://cdn.jsdelivr.net/gh/WXSD-Sales/embeddable-meetings-widget/docs/bundle.js"></script>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #444;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+            border: 2px solid #3498db;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+            border: 2px solid #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 30px;
+        }
+        
+        .section-title h2 {
+            font-size: 32px;
+            color: #333;
+            position: relative;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: #3498db;
+        }
+        
+        .section-title p {
+            color: #777;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+        
+        .main-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        
+        .logo span {
+            color: #3498db;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: #333;
+            font-weight: 600;
+            padding: 10px 0;
+            display: block;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        
+        nav ul li a:hover {
+            color: #3498db;
+        }
+        
+        nav ul li.active a {
+            color: #3498db;
+        }
+        
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        /* Video Conference Page Styles */
+        .telehealth-section {
+            padding: 30px 0;
+            padding-bottom: 20px;
+            margin-top: 80px; /* Adjusted height for header without blue top bar */
+        }
+        
+        .telehealth-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+        }
+        
+        /* Sidebar */
+        .telehealth-sidebar {
+            background-color: white;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .consultation-info {
+            margin-bottom: 30px;
+        }
+        
+        .consultation-info h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .info-text h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .info-text p {
+            color: #777;
+        }
+        
+        .patient-form h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 15px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        textarea.form-control {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        /* Video Conference Area */
+        .video-conference-area {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: auto;
+        }
+        
+        .video-status {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-dot.connected {
+            background-color: #2ecc71;
+        }
+        
+        .status-text {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .status-text.connected {
+            color: #2ecc71;
+        }
+        
+        .timer {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .video-container {
+            width: 100%;
+            height: 650px;
+            position: relative;
+            background-color: white;
+            margin-top: 0;
+        }
+        
+        .main-video-stream {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .main-video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        
+        .placeholder-icon {
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        
+        .placeholder-text h4 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .placeholder-text p {
+            opacity: 0.7;
+            max-width: 450px;
+        }
+        
+        .small-video-stream {
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            border: 3px solid #3498db;
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 10;
+        }
+        .controls-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .control-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-mic, .btn-camera {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-mic:hover, .btn-camera:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .btn-mic.off, .btn-camera.off {
+            background-color: #f1f1f1;
+            color: #e74c3c;
+        }
+        
+        .btn-end-call {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-end-call:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-screen {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-screen:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .chat-container.open {
+            display: flex;
+        }
+        
+        .chat-header {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .close-chat {
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+        
+        .message.received {
+            margin-right: auto;
+        }
+        
+        .message.sent {
+            margin-left: auto;
+        }
+        
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 20px;
+        }
+        
+        .received .message-content {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .sent .message-content {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #777;
+        }
+        
+        .sent .message-time {
+            text-align: right;
+        }
+        
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+        }
+        
+        .chat-input button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .open-chat-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Waiting Area */
+        .waiting-area, .call-ended {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            z-index: 20;
+        }
+        
+        .waiting-area.active, .call-ended.active {
+            display: flex;
+        }
+        
+        .waiting-icon, .ended-icon {
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+        
+        .ended-icon {
+            color: #e74c3c;
+        }
+        
+        .waiting-text h3, .ended-text h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .waiting-text p, .ended-text p {
+            opacity: 0.7;
+            max-width: 450px;
+            margin-bottom: 20px;
+        }
+        
+        /* Additional Features Section */
+        .additional-features {
+            padding: 70px 0;
+            background-color: #f8f9fa;
+            margin-top: 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: #3498db;
+            font-size: 30px;
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-card p {
+            color: #777;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: #bbb;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: #3498db;
+        }
+        
+        .footer-about p {
+            margin-bottom: 20px;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-social a:hover {
+            background-color: #3498db;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links ul li a {
+            color: #bbb;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links ul li a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .footer-contact-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .footer-contact-icon {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .telehealth-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+            
+            nav {
+                position: fixed;
+                top: 80px; /* Adjusted for smaller header */
+                right: -100%;
+                width: 250px;
+                height: calc(100vh - 80px);
+                background-color: white;
+                flex-direction: column;
+                padding: 20px;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+            
+            nav.active {
+                right: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 0 0 15px 0;
+            }
+            
+            .small-video-stream {
+                width: 120px;
+                height: 90px;
+            }
+            
+            .controls-bar {
+                flex-wrap: wrap;
+            }
+            
+            .control-button {
+                margin-bottom: 10px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .video-container {
+                height: 350px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-container {
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Without Blue Top Bar -->
+    <header>
+        <div class="container main-header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <!-- Heart icon SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+                <h1>Medi<span>Care</span></h1>
+            </div>
+            <div class="mobile-toggle" id="mobile-toggle">
+                <!-- Menu icon SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li class="active"><a href="telehealth.html">Telehealth</a></li>
+                    <li><a href="doctors.html">Doctors</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Telehealth Section -->
+    <section class="telehealth-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Virtual Consultation</h2>
+                <p>Connect with our healthcare professionals from the comfort of your home through secure video conferencing.</p>
+            </div>
+            
+            <div class="telehealth-container">
+                <!-- Sidebar with consultation info and patient form -->
+                <div class="telehealth-sidebar">
+                    <div class="consultation-info">
+                        <h3>Consultation Details</h3>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <!-- Doctor icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                </svg>
+                            </div>
+                            <div class="info-text">
+                                <h4>Doctor</h4>
+                                <p>Dr. Sarah Johnson</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <!-- Calendar icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                </svg>
+                            </div>
+                            <div class="info-text">
+                                <h4>Date & Time</h4>
+                                <p id="current-date">April 11, 2025</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <!-- Clock icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                                    <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                                </svg>
+                            </div>
+                            <div class="info-text">
+                                <h4>Duration</h4>
+                                <p>30 Minutes</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <!-- Tag icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                                </svg>
+                            </div>
+                            <div class="info-text">
+                                <h4>Consultation Type</h4>
+                                <p>General Checkup</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="patient-form">
+                        <h3>Patient Information</h3>
+                        <form id="patient-info-form">
+                            <div class="form-group">
+                                <label for="concern">Primary Concern</label>
+                                <textarea class="form-control" id="concern" placeholder="Briefly describe your symptoms or concerns"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="symptoms-duration">Symptoms Duration</label>
+                                <input type="text" class="form-control" id="symptoms-duration" placeholder="How long have you been experiencing symptoms?">
+                            </div>
+                            <div class="form-group">
+                                <label for="medications">Current Medications</label>
+                                <textarea class="form-control" id="medications" placeholder="List any medications you are currently taking"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="allergies">Allergies</label>
+                                <input type="text" class="form-control" id="allergies" placeholder="List any allergies you have">
+                            </div>
+                            <button type="button" class="btn btn-primary" style="width:100%">Update Information</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Video Conference Area -->
+                <div class="video-conference-area">
+                    <div class="video-container">
+                        <!-- Main Video Stream (Doctor) -->
+                        <div class="main-video-stream" id="remote-video-container">
+                            <div class="main-video-placeholder" id="embeddable-meetings-widget">
+                                <div class="placeholder-icon">
+                                    <!-- Video icon SVG -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/>
+                                    </svg>
+                                </div>
+                                <div class="placeholder-text">
+                                    <h4>Waiting for Doctor</h4>
+                                    <p>Your video conference will begin when the doctor joins the session. Make sure your camera and microphone are allowed.</p>
+                                </div>
+                            </div>
+                        </div>                        
+                        
+                        <!-- Waiting Area Overlay -->
+                        <div class="waiting-area" id="waiting-area">
+                            <div class="waiting-icon">
+                                <!-- Hourglass icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M6 2v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18V2H6zm10 14.5V20H8v-3.5l4-4 4 4zm-4-5l-4-4V4h8v3.5l-4 4z"/>
+                                </svg>
+                            </div>
+                            <div class="waiting-text">
+                                <h3>Waiting for the Doctor</h3>
+                                <p>Your appointment is scheduled to begin soon. Please stay on this page and ensure your camera and microphone are ready.</p>
+                                <button class="btn btn-primary" id="test-devices-btn">Test Audio & Video</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Call Ended Overlay -->
+                        <div class="call-ended" id="call-ended">
+                            <div class="ended-icon">
+                                <!-- Phone slash icon SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/>
+                                    <path d="M1 1h22v22H1z" fill="transparent"/>
+                                </svg>
+                            </div>
+                            <div class="ended-text">
+                                <h3>Consultation Ended</h3>
+                                <p>Thank you for using our telehealth service. A summary of your consultation will be available in your patient portal.</p>
+                                <button class="btn btn-primary" id="new-appointment-btn">Schedule Follow-up</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Additional Features Section -->
+    <section class="additional-features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Telehealth Benefits</h2>
+                <p>Our virtual consultation platform offers several advantages for your healthcare needs.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <!-- Home icon SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                    </div>
+                    <h3>Care From Home</h3>
+                    <p>Receive professional medical advice and care from the comfort and safety of your own home.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <!-- Clock icon SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                            <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                        </svg>
+                    </div>
+                    <h3>Save Time</h3>
+                    <p>Eliminate travel time and waiting room delays with our efficient virtual consultation service.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <!-- Shield icon SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                        </svg>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>Our platform uses end-to-end encryption and complies with all healthcare privacy regulations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h3>About MediCare</h3>
+                    <p>MediCare is committed to providing high-quality healthcare services through innovative technology solutions, making healthcare accessible to everyone.</p>
+                    <div class="footer-social">
+                        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                        </svg></a>
+                        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                        </svg></a>
+                        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg></a>
+                        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+                        </svg></a>
+                    </div>
+                </div>
+                <div class="footer-column footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="telehealth.html">Telehealth</a></li>
+                        <li><a href="doctors.html">Our Doctors</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-links">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#">Primary Care</a></li>
+                        <li><a href="#">Specialty Care</a></li>
+                        <li><a href="#">Virtual Consultations</a></li>
+                        <li><a href="#">Diagnostics</a></li>
+                        <li><a href="#">Health Records</a></li>
+                        <li><a href="#">Prescriptions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                        </div>
+                        <p>123 Healthcare Street, Medical City, MC 12345</p>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            </svg>
+                        </div>
+                        <p>(123) 456-7890</p>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                        </div>
+                        <p>info@medicare.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MediCare. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+  
+  // load some functions  
+  <script src="./main.js"></script>
+
+    <!-- JavaScript for Current Date/Time -->
+    <script>
+        // Function to update the current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Update the date/time when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            // Update every minute
+            setInterval(updateDateTime, 60000);
+
+            // load Meetings Widget
+            (async () => {
+                try {
+                const token = await getAccessToken(); 
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const sipAddress = urlParams.get("sipAddress");
+                /*
+                let message = urlParams.get("message");
+                if (message) {
+                    message = decodeURIComponent(message);
+                }
+                else {
+                    message =
+                    "Hi there! Welcome to our video support page. Please wait for the host to start the meeting";
+                }
+                document.getElementById("message").textContent = message;
+                */
+                webexMeetingsWidget({
+                    accessToken: token,
+                    meetingDestination: sipAddress,
+                    theme: "light",
+                    draggable: false,
+                    width: "100%",
+                    height: "100%",
+                    layout: "Grid",
+                    inMeetingControls: ["mute-audio", "leave-meeting"],
+                    interstitialControls: ["join-meeting"],
+                });
+                }
+                catch (error) {
+                console.log ('Error getting the access token from the backend: ', error);
+                }
+      })();
+            
+            // Mobile navigation toggle
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const nav = document.getElementById('nav');
+            
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    nav.classList.toggle('active');
+                });
+            }
+            
+            /*
+            // Simulating connection status change (for demo)
+            setTimeout(function() {
+                const statusDot = document.getElementById('connection-status');
+                const statusText = document.getElementById('status-text');
+                
+                if (statusDot && statusText) {
+                    statusDot.classList.add('connected');
+                    statusText.classList.add('connected');
+                    statusText.textContent = 'Connected';
+                }
+            }, 3000);
+            */
+            
+            // Here you would integrate your video SDK code
+            // Example placeholder:
+            /*
+            // Initialize your video SDK
+            const videoSDK = new YourVideoSDK({
+                containerId: 'remote-video-container',
+                localContainerId: 'local-video-container',
+                // other configuration options
+            });
+            
+            // Set up event listeners for control buttons
+            document.getElementById('toggle-mic').addEventListener('click', function() {
+                videoSDK.toggleMic();
+                this.classList.toggle('off');
+            });
+            
+            document.getElementById('toggle-camera').addEventListener('click', function() {
+                videoSDK.toggleCamera();
+                this.classList.toggle('off');
+            });
+            
+            document.getElementById('end-call').addEventListener('click', function() {
+                videoSDK.endCall();
+                document.getElementById('call-ended').classList.add('active');
+            });
+            
+            document.getElementById('share-screen').addEventListener('click', function() {
+                videoSDK.shareScreen();
+            });
+            */
+        });
+    </script>
+</body>
+</html>
