@@ -1,119 +1,101 @@
-/**
- * This is the main Node.js server script for your project
- * Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
- */
+const express = require('express');
+const app = express();
+const axios = require('axios');
+const cors = require('cors');
+const path = require('path');
+const cron = require('node-cron');
 
-const path = require("path");
-
-// Require the fastify framework and instantiate it
-const fastify = require("fastify")({
-  // Set this to true for detailed logging:
-  logger: false,
-});
-
-// ADD FAVORITES ARRAY VARIABLE FROM TODO HERE
-
-// Setup our static files
-fastify.register(require("@fastify/static"), {
-  root: path.join(__dirname, "public"),
-  prefix: "/", // optional: default '/'
-});
-
-// Formbody lets us parse incoming forms
-fastify.register(require("@fastify/formbody"));
-
-// View is a templating manager for fastify
-fastify.register(require("@fastify/view"), {
-  engine: {
-    handlebars: require("handlebars"),
-  },
-});
-
-// Load and parse SEO data
-const seo = require("./src/seo.json");
-if (seo.url === "glitch-default") {
-  seo.url = `https://${process.env.PROJECT_DOMAIN}.glitch.me`;
+if (process.env.NODE_ENV !== 'production'){
+  require('dotenv').config()
 }
 
-/**
- * Our home page route
- *
- * Returns src/pages/index.hbs with data built into it
- */
-fastify.get("/", function (request, reply) {
-  // params is an object we'll pass to our handlebars template
-  let params = { seo: seo };
+const refreshToken = process.env.REFRESH_TOKEN;
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const port = process.env.PORT || 3000;
+let guestIssuerServiceAppToken = '';
 
-  // If someone clicked the option for a random color it'll be passed in the querystring
-  if (request.query.randomize) {
-    // We need to load our color data file, pick one at random, and add it to the params
-    const colors = require("./src/colors.json");
-    const allColors = Object.keys(colors);
-    let currentColor = allColors[(allColors.length * Math.random()) << 0];
-
-    // Add the color properties to the params object
-    params = {
-      color: colors[currentColor],
-      colorError: null,
-      seo: seo,
-    };
+async function refreshAccessToken() {
+  const data = 
+    new URLSearchParams({
+    'grant_type': 'refresh_token',
+    'refresh_token': refreshToken,
+    'client_id': clientId,
+    'client_secret': clientSecret
+    });
+  const config = {
+    method: 'post',
+    url: 'https://webexapis.com/v1/access_token',
+    headers: { 
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    data : data.toString()
   }
+  try {
+    const response = await axios.request(config);
+    guestIssuerServiceAppToken = response.data.access_token;
+    console.log('Access token refreshed successfully');
+    console.log('Refresh Access Token API status code:', response.status);
+  } catch (error) {
+    console.error('Error refreshing the access token:', error);
+    throw (error);
+    // alternative: remove the console.log and build a New Error object that includes error received:
+    // throw new Error ('Error refreshing the access token:', {cause: error } )
+  }  
+}
 
-  // The Handlebars code will be able to access the parameter values and build them into the page
-  return reply.view("/src/pages/index.hbs", params);
+// Enable CORS for all routes
+app.use(cors()); 
+// Serve static files from the 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Initial token refresh
+(async () => {
+  try {
+    await refreshAccessToken();
+  }
+  catch (error) {
+    console.error('Initial token refresh failed',  error );
+  }
+})();
+
+// Schedule token refresh daily at 1 PM
+cron.schedule('0 13 * * *', async () => {
+  try {
+    await refreshAccessToken();
+  }
+  catch (error) {
+    console.error ('Scheduled token refresh failed', error );
+  }
 });
 
-/**
- * Our POST route to handle and react to form submissions
- *
- * Accepts body data indicating the user choice
- */
-fastify.post("/", function (request, reply) {
-  // Build the params object to pass to the template
-  let params = { seo: seo };
+app.get('/get-access-token', async (req, res) => {
+  let data = JSON.stringify({
+    "subject": "OptusGuestIdentifier",
+    "displayName": "Patient Zi"
+  });
+  const config = {
+    method: 'post',
+    url: 'https://webexapis.com/v1/guests/token',
+    headers: { 
+      'Content-Type': 'application/json', 
+      'Authorization': 'Bearer ' + guestIssuerServiceAppToken
+    },
+    data : data
+  };
 
-  // If the user submitted a color through the form it'll be passed here in the request body
-  let color = request.body.color;
-
-  // If it's not empty, let's try to find the color
-  if (color) {
-    // ADD CODE FROM TODO HERE TO SAVE SUBMITTED FAVORITES
-
-    // Load our color data file
-    const colors = require("./src/colors.json");
-
-    // Take our form submission, remove whitespace, and convert to lowercase
-    color = color.toLowerCase().replace(/\s/g, "");
-
-    // Now we see if that color is a key in our colors object
-    if (colors[color]) {
-      // Found one!
-      params = {
-        color: colors[color],
-        colorError: null,
-        seo: seo,
-      };
-    } else {
-      // No luck! Return the user value as the error property
-      params = {
-        colorError: request.body.color,
-        seo: seo,
-      };
-    }
+  try {
+    const response = await axios.request(config)
+    const accessToken = response.data.accessToken
+    console.log('Guest token refreshed successfully');
+    console.log('Create guest token API status code:', response.status);
+    res.status(200).json({ accessToken }); // Send access token and status code in one line
+  } catch (error) {
+    console.error('Error creating the guest token:', error);
+    res.status(500).json({ error: 'Failed to create the guest token' }); // Send error response
   }
-
-  // The Handlebars template will use the parameter values to update the page with the chosen color
-  return reply.view("/src/pages/index.hbs", params);
 });
 
-// Run the server and report out to the logs
-fastify.listen(
-  { port: process.env.PORT, host: "0.0.0.0" },
-  function (err, address) {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-    console.log(`Your app is listening on ${address}`);
-  }
-);
+app.listen(port, () => {
+  console.log(`Server is running at port: ${port}`);
+});

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Support Simple Demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/gh/WXSD-Sales/embeddable-meetings-widget/docs/webex-widgets.css"
+    />
+    <script src="https://cdn.jsdelivr.net/gh/WXSD-Sales/embeddable-meetings-widget/docs/bundle.js"></script>
+  </head>
+  <style>
+    /* Style to change Text size depending on screen size */
+    #message {
+      font-family: Arial, sans-serif;
+    }
+    /* Apply this only on mobile devices (max-width: 768px) */
+    @media (max-width: 1500px) {
+      #message {
+        font-size: 60px; /* Bigger text only on mobile */
+      }
+    }
+  </style>
+ 
+  <body>
+    <p id="message"></p>
+    <div id="embeddable-meetings-widget"></div>
+    <script src="./main.js"></script>
+    <script>
+      (async () => {
+        try {
+          const token = await getAccessToken();
+          const queryString = window.location.search;
+          const urlParams = new URLSearchParams(queryString);
+          const sipAddress = urlParams.get("sipAddress");
+          let message = urlParams.get("message");
+          if (message) {
+            message = decodeURIComponent(message);
+          }
+          else {
+            message =
+              "Hi there! Welcome to our video support page. Please wait for the host to start the meeting";
+          }
+          document.getElementById("message").textContent = message;
+          webexMeetingsWidget({
+            accessToken: token,
+            meetingDestination: sipAddress,
+            theme: "light",
+            draggable: false,
+            width: "100%",
+            height: "100%",
+            layout: "Grid",
+            inMeetingControls: ["mute-audio", "leave-meeting"],
+            interstitialControls: ["join-meeting"],
+          });
+        }
+        catch (error) {
+          console.log ('Error getting the access token from the backend: ', error);
+        }
+      })();
+    </script>
+  </body>
+</html>
